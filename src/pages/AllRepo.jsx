@@ -1,6 +1,6 @@
 import RepoList from "@/components/RepoList";
 import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonDemo } from "@/components/ui/skeleton";
 import useDebounce from "@/hooks/useDebounce";
 import { Suspense, useState } from "react";
 
@@ -10,7 +10,7 @@ const AllRepo = () => {
   const content = (
     <Suspense
       fallback={[...Array(5).keys()].map((i) => (
-        <Skeleton key={i} />
+        <SkeletonDemo key={i} />
       ))}
     >
       <RepoList debouncedSearch={debouncedSearch} />
@@ -22,7 +22,6 @@ const AllRepo = () => {
       <div>
         <Input value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
-
       {content}
     </div>
   );

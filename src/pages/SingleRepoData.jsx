@@ -1,7 +1,7 @@
 import ErrorFallback from "@/components/ErrorFallback";
 import RepoDetails from "@/components/RepoDetails";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonDemo } from "@/components/ui/skeleton";
 import { Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ const SingleRepoData = () => {
         navigate("/");
       }}
     >
-      <Suspense fallback={<Skeleton />}>
+      <Suspense fallback={<SkeletonDemo />}>
         <RepoDetails data={testError ? "License" : ""} />
       </Suspense>
     </ErrorBoundary>
