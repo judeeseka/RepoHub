@@ -25,7 +25,8 @@ const SingleRepoData = () => {
 
   return (
     <div>
-      {content}
+      <div className="flex h-screen justify-center items-center">{content}</div>
+
       <Button
         className="absolute bottom-1 left-1"
         onClick={() => setTestError(true)}

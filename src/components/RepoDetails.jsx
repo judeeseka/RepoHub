@@ -5,12 +5,17 @@ import {
   Card,
   CardContent,
   CardDescription,
-  //   CardFooter,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { PropTypes } from "prop-types";
-// import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import Modal from "./Modal";
+import { useState } from "react";
+import DeleteModal from "./DeleteModal";
 
 const octokit = new Octokit({
   auth: import.meta.env.VITE_GITHUB_PAT,
@@ -34,14 +39,17 @@ const formatDate = (dateString) => {
 
 const RepoDetails = ({ data: errorData }) => {
   const { name } = useParams();
+  const [open, setOpen] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
 
   const { data } = useQuery({
-    queryKey: ["repoData", name],
+    queryKey: ["singleRepoData", name],
     queryFn: getSingleData,
     suspense: true,
   });
+
   return (
-    <div className="container pt-20 md:h-screen md:flex md:flex-col md:justify-center">
+    <div className="container">
       <Card className="w-full md:w-5/6 md:mx-auto lg:w-1/2">
         <CardHeader>
           <CardTitle className="text-center md:text-4xl">{name}</CardTitle>
@@ -89,14 +97,36 @@ const RepoDetails = ({ data: errorData }) => {
             </a>
           </p>
         </CardContent>
-        {/* <CardFooter className="flex justify-center gap-4">
-          <Button variant="outline" size="lg" className="text-xl">
-            Edit
-          </Button>
-          <Button variant="destructive" className="text-xl">
-            Delete
-          </Button>
-        </CardFooter> */}
+
+        {new Date(data?.data.created_at) > new Date("2024-04-23T22:03:23Z") && (
+          <CardFooter className="flex justify-center gap-4">
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="lg" className="text-xl">
+                  Edit
+                </Button>
+              </DialogTrigger>
+              <Modal
+                title="Edit Repository"
+                description="Make changes to your profile here. Click save when you're done."
+                action="Save Changes"
+                repoName={name}
+                repoDescription={data?.data.description}
+                method="PATCH"
+                setOpen={setOpen}
+              />
+            </Dialog>
+
+            <AlertDialog open={deleteModal} onOpenChange={setDeleteModal}>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="text-xl">
+                  Delete
+                </Button>
+              </AlertDialogTrigger>
+              <DeleteModal setDeleteModal={setDeleteModal} repoName={name} />
+            </AlertDialog>
+          </CardFooter>
+        )}
       </Card>
     </div>
   );

@@ -12,7 +12,8 @@ const octokit = new Octokit({
 });
 
 async function getData({ queryKey }) {
-  const response = await octokit.request("GET /users/judeeseka/repos", {
+  const response = await octokit.request("GET /users/{username}/repos", {
+    username: "judeeseka",
     headers: {
       "X-GitHub-Api-Version": "2022-11-28",
     },
@@ -40,7 +41,7 @@ const RepoList = ({ debouncedSearch }) => {
   const [hasPrevPage, setHasPrevPage] = useState(false);
 
   const { data } = useQuery({
-    queryKey: ["repoData", pageNumber, debouncedSearch],
+    queryKey: ["allRepoData", pageNumber, debouncedSearch],
     queryFn: getData,
     suspense: true,
     keepPreviousData: true,
@@ -71,7 +72,9 @@ const RepoList = ({ debouncedSearch }) => {
         );
       })
     ) : (
-      <p className="text-red-600">{debouncedSearch} repository do not exist</p>
+      <p className="text-red-600 text-center">
+        {debouncedSearch} repository do not exist
+      </p>
     );
 
   useEffect(() => {
@@ -97,6 +100,7 @@ const RepoList = ({ debouncedSearch }) => {
     setHasNextPage(nextPage);
     setHasPrevPage(prevPage);
   }, [data]);
+
   return (
     <div>
       {repoData}
@@ -124,6 +128,7 @@ const RepoList = ({ debouncedSearch }) => {
 
 RepoList.propTypes = {
   debouncedSearch: PropTypes.string,
+  onDataFetch: PropTypes.func,
 };
 
 export default RepoList;
